@@ -119,7 +119,12 @@ router.delete('/:id', requireRole('organiser'), (req, res) => {
   if (!event) return res.status(404).json({ error: 'Event not found' });
   if (event.organiser_id !== req.user.id) return res.status(403).json({ error: 'Forbidden' });
 
-  db.prepare('DELETE FROM events WHERE id = ?').run(req.params.id);
+  db.transaction(() => {
+    db.prepare('DELETE FROM tickets WHERE event_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM purchases WHERE event_id = ?').run(req.params.id);
+    db.prepare('DELETE FROM events WHERE id = ?').run(req.params.id);
+  })();
+
   res.json({ success: true });
 });
 

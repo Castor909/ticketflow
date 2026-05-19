@@ -1,1 +1,14 @@
 /.claude
+
+# SQLite WAL mode temp files
+*.db-shm
+*.db-wal
+
+# Dependencies
+node_modules/
+
+# Build output
+frontend/dist/
+
+# Env
+.env
